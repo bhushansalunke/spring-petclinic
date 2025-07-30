@@ -66,16 +66,19 @@ pipeline {
             }
         }
 
-        stage('Remote Deployment to Kube-VM') {
+        stage('Update Deployment File') {
             steps {
-                sshagent(['kube-ssh']) {
-                    sh """
-                    ssh -o StrictHostKeyChecking=no ditiss@192.168.74.225 \"
-                        sed -i 's|image: bhushansalunke/pet-clinic:.*|image: ${DOCKER_IMAGE}:${DOCKER_TAG}|' ~/Desktop/Project/deployment.yml && \
-                        kubectl apply -f ~/Desktop/Project/deployment.yml && \
-                        kubectl rollout restart deployment petclinic-deployment
-                    \"
-                    """
+                withCredentials([string(credentialsId: 'github-token', variable: 'GITHUB_TOKEN')]) {
+                    sh '''
+                        git config --global user.email "bhushansalunke55@gmail.com"
+                        git config --global user.name "bhushansalunke"
+                       
+                        sed -i "s|image: .*|image: ${DOCKER_IMAGE}:${DOCKER_TAG}|" ${DEPLOYMENT_FILE}
+
+                        git add ${DEPLOYMENT_FILE}
+                        git commit -m "Update deployment image to ${DOCKER_TAG}" || echo "No changes to commit"
+                        git push https://${GITHUB_TOKEN}@github.com/${GIT_REPO}.git HEAD:main
+                    '''
                 }
             }
         }

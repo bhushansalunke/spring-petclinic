@@ -9,9 +9,9 @@ pipeline {
     environment {
         SCANNER_HOME = tool 'sonar-scanner'
         DOCKER_CREDENTIALS_ID = 'docker-hub'
-        DOCKER_IMAGE = 'prathameshj08/pet-clinic'
+        DOCKER_IMAGE = 'bhushansalunke/pet-clinic'
         DOCKER_TAG = "build-${env.BUILD_NUMBER}"
-        GIT_REPO = "PrathameshJ-08/spring-petclinic"
+        GIT_REPO = "bhushansalunke/spring-petclinic"
     }
 
     stages {
@@ -71,7 +71,7 @@ pipeline {
                 sshagent(['kube-ssh']) {
                     sh """
                     ssh -o StrictHostKeyChecking=no ditiss@192.168.74.225 \"
-                        sed -i 's|image: prathameshj08/pet-clinic:.*|image: ${DOCKER_IMAGE}:${DOCKER_TAG}|' ~/Desktop/Project/deployment.yml && \
+                        sed -i 's|image: bhushansalunke/pet-clinic:.*|image: ${DOCKER_IMAGE}:${DOCKER_TAG}|' ~/Desktop/Project/deployment.yml && \
                         kubectl apply -f ~/Desktop/Project/deployment.yml && \
                         kubectl rollout restart deployment petclinic-deployment
                     \"

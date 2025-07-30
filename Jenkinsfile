@@ -12,6 +12,7 @@ pipeline {
         DOCKER_IMAGE = 'bhushansalunke/pet-clinic'
         DOCKER_TAG = "build-${env.BUILD_NUMBER}"
         GIT_REPO = "bhushansalunke/spring-petclinic"
+        DEPLOYMENT_FILE = "deployment/deployment.yml"
     }
 
     stages {

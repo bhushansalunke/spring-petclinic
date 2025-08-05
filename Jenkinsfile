@@ -102,7 +102,7 @@ pipeline {
                          <p><a href="${env.BUILD_URL}">View Build</a></p>
                          <p>See attached Dependency-Check and Trivy reports.</p>""",
                 mimeType: 'text/html',
-                to: 'jadhavprathamesh957@gmail.com',
+                to: 'jadhavprathamesh957@gmail.com,bhushansalunke55@gmail.com,monalinishad641@gmail.com,anishapatil004@gmail.com,twarke55@gmail.com',
                 attachmentsPattern: '**/dependency-check-report.html, **/trivy-report.txt'
             )
         }
@@ -114,7 +114,7 @@ pipeline {
                          <p><a href="${env.BUILD_URL}">View Build</a></p>
                          <p>See attached reports for error details.</p>""",
                 mimeType: 'text/html',
-                to: 'jadhavprathamesh957@gmail.com',
+                to: 'jadhavprathamesh957@gmail.com,bhushansalunke55@gmail.com,monalinishad641@gmail.com,anishapatil004@gmail.com,twarke55@gmail.com',
                 attachmentsPattern: '**/dependency-check-report.html, **/trivy-report.txt'
             )
         }

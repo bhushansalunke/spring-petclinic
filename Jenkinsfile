@@ -66,6 +66,15 @@ pipeline {
                 }
             }
         }
+	stage('Container Vulnerability Scan - Trivy') {
+            steps {
+                sh """
+                    trivy image --exit-code 0 --severity HIGH,CRITICAL ${DOCKER_IMAGE}:${DOCKER_TAG} > trivy-report.txt
+                """
+                archiveArtifacts artifacts: 'trivy-report.txt', allowEmptyArchive: true
+            }
+        }
+
 
         stage('Update Deployment File') {
             steps {
@@ -86,14 +95,28 @@ pipeline {
     }
 
     post {
-        always {
-            echo "Build finished: ${currentBuild.result}"
-        }
         success {
-            echo "Build and deployment succeeded!"
+            emailext(
+                subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """<p>Build succeeded.</p>
+                         <p><a href="${env.BUILD_URL}">View Build</a></p>
+                         <p>See attached Dependency-Check and Trivy reports.</p>""",
+                mimeType: 'text/html',
+                to: 'jadhavprathamesh957@gmail.com',
+                attachmentsPattern: '**/dependency-check-report.html, **/trivy-report.txt'
+            )
         }
+
         failure {
-            echo "Build or deployment failed!"
+            emailext(
+                subject: "FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """<p><b>Build failed.</b></p>
+                         <p><a href="${env.BUILD_URL}">View Build</a></p>
+                         <p>See attached reports for error details.</p>""",
+                mimeType: 'text/html',
+                to: 'jadhavprathamesh957@gmail.com',
+                attachmentsPattern: '**/dependency-check-report.html, **/trivy-report.txt'
+            )
         }
     }
 }
